@@ -4243,3 +4243,158 @@ button.s-nav-item {
 [data-theme='dark'] .custom-select-option.selected {
   background: var(--blue);
 }
+
+/* ============================================================
+   MOBILE RESPONSIVE OVERRIDES (< 860px)
+   ============================================================ */
+@media (max-width: 860px) {
+  /* 1. Core Framework & Bottom App Bar Navigation */
+  .dash-layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    flex-direction: row;
+    padding: 0 10px;
+    z-index: 1000;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    justify-content: space-around;
+    align-items: center;
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+  }
+
+  .sidebar-logo, .sidebar-user, .sidebar-bottom {
+    display: none; /* Hide non-essentials to maximize space for icons */
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .s-nav-item {
+    padding: 8px;
+    margin: 0;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.75rem;
+    gap: 4px;
+    border-radius: var(--r-md);
+    background: transparent !important;
+  }
+  
+  .s-nav-icon {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+
+  .s-nav-item.active {
+    color: var(--blue);
+  }
+
+  /* 2. Main Body & Scrolling */
+  .dash-main {
+    padding: 24px 16px 100px 16px; /* Push content above Bottom App Bar */
+    overflow-y: auto;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .topbar-title {
+    font-size: 1.5rem;
+  }
+  
+  .search-bar {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  /* 3. Containers & Grids */
+  .content-grid, .doc-grid, .form-grid-2, .stat-row, .lab-verify-row {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+  
+  .med-search-wrap, .input-group, .family-input, .setup-nav-row {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .setup-nav-row button {
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  /* 4. Landing Page Splitting */
+  .login-split, .landing-section-item {
+    flex-direction: column;
+  }
+  
+  .ls-col, .login-hero {
+    flex: none;
+    width: 100%;
+    min-height: auto;
+    padding: 32px 24px;
+  }
+  
+  .login-form-wrap {
+    padding: 32px 24px;
+    width: 100%;
+  }
+
+  /* 5. Modals & Panels */
+  .uni-confirm-modal, .setup-card-wide {
+    width: calc(100% - 32px);
+    max-width: 100%;
+    margin: 16px;
+    border-radius: var(--r-md);
+    padding: 20px;
+  }
+
+  .pdf-fs-overlay {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  /* Utilities */
+  .hero-title {
+    font-size: 2.8rem;
+  }
+  
+  .doc-tab-bar {
+    flex-direction: column;
+    width: 100%;
+    background: transparent;
+    padding: 0;
+    gap: 8px;
+  }
+  
+  .doc-tab-btn {
+    width: 100%;
+    border-radius: var(--r-sm);
+    background: var(--white);
+    border: 1px solid var(--b2);
+  }
+}
