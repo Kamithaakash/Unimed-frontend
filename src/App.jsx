@@ -2103,6 +2103,15 @@ function LabPortal({ username, handleLogout, showAlert, showConfirm }) {
           }
         }
         setStudent(data);
+        try {
+          const cache = JSON.parse(localStorage.getItem('unimed_records_cache') || '{}');
+          cache[data.indexNumber] = {
+            name: data.name,
+            records: data.medicalRecords || [],
+            cachedAt: new Date().toISOString()
+          };
+          localStorage.setItem('unimed_records_cache', JSON.stringify(cache));
+        } catch { /* ignore */ }
       }
       else { setShowRegister(true); setStudent(null); }
     } catch { showAlert("Error finding student."); }
@@ -2130,6 +2139,13 @@ function LabPortal({ username, handleLogout, showAlert, showConfirm }) {
       if (res.ok) {
         const data = await res.json();
         setPendingStudents(data);
+        try {
+          const cache = JSON.parse(localStorage.getItem('unimed_records_cache') || '{}');
+          data.forEach(s => {
+            cache[s.indexNumber] = { name: s.name, records: s.medicalRecords || [], cachedAt: new Date().toISOString() };
+          });
+          localStorage.setItem('unimed_records_cache', JSON.stringify(cache));
+        } catch { /* ignore */ }
       } else {
         showAlert('Failed to load pending students');
       }
@@ -2379,6 +2395,8 @@ BCC: ${eVacBCC || 'Not recorded'}\nDPT: ${eVacDPT || 'Not recorded'}\nMR/MMR: ${
 
       {activeView === 'settings' ? (
         <SettingsPanel role="Lab Assistant" />
+      ) : activeView === 'logs' ? (
+        <LogsDashboard />
       ) : activeView === 'pending-approvals' ? (
         <div className="dash-main">
           <div className="topbar">
@@ -3148,7 +3166,7 @@ function Sidebar({ role, name, onLogout, activeView, onNavigate, profilePhoto })
             <span className="s-nav-icon">⏳</span> Pending Approvals
           </button>
         )}
-        {role === 'Doctor' && (
+        {(role === 'Doctor' || role === 'Lab Assistant') && (
           <button
             className={`s-nav-item ${activeView === 'logs' ? 'active' : ''}`}
             onClick={() => onNavigate('logs')}
