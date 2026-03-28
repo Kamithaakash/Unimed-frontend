@@ -182,6 +182,7 @@ function App() {
   const [forgotStep, setForgotStep] = useState(1);
   const [forgotIndex, setForgotIndex] = useState('');
   const [forgotEmail, setForgotEmail] = useState('');
+  const [registeredEmail, setRegisteredEmail] = useState('');
   const [forgotMsg, setForgotMsg] = useState('');
   const [forgotError, setForgotError] = useState('');
   const [isVerifyingForgot, setIsVerifyingForgot] = useState(false);
@@ -384,6 +385,8 @@ function App() {
     try {
       const res = await fetch(`${API_BASE_URL}/student/${forgotIndex}`);
       if (res.ok) {
+        const data = await res.json();
+        setRegisteredEmail(data.email);
         setForgotStep(2);
       } else {
         setForgotError('Student record not found. Please register first.');
@@ -400,6 +403,13 @@ function App() {
     setForgotMsg('Connecting to UniMed mail server...');
     setForgotError('');
 
+    if (registeredEmail && forgotEmail.trim().toLowerCase() !== registeredEmail.trim().toLowerCase()) {
+      setForgotError('Security Error: This email does not match the registered university email for this Index Number.');
+      setForgotMsg('');
+      return;
+    }
+
+    setIsVerifyingForgot(true);
     try {
       const res = await fetch(`${API_BASE_URL}/student/send-otp`, {
         method: 'POST',
@@ -415,6 +425,8 @@ function App() {
       }
     } catch {
       setForgotError('Network error: Could not reach the backend server.');
+    } finally {
+      setIsVerifyingForgot(false);
     }
   };
 
@@ -520,7 +532,16 @@ function App() {
               {forgotStep === 2 && (
                 <div className="input-group slide-top">
                   <label>Enter University Email</label>
-                  <input type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="e.g. name.24@uom.lk" required />
+                  <input 
+                    type="email" 
+                    value={forgotEmail} 
+                    onChange={(e) => {
+                      setForgotEmail(e.target.value);
+                      if (forgotError) setForgotError('');
+                    }} 
+                    placeholder="e.g. name.24@uom.lk" 
+                    required 
+                  />
                 </div>
               )}
               {forgotStep === 3 && (
@@ -550,7 +571,12 @@ function App() {
               <button type="submit" className="btn-primary login-submit-btn" disabled={isVerifyingForgot}>
                 {forgotStep === 1 ? (isVerifyingForgot ? 'Checking...' : 'Verify Student') : forgotStep === 2 ? 'Send Code' : 'Reset Password'} <span className="arrow">→</span>
               </button>
-              <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <div style={{ textAlign: 'center', marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {forgotStep === 2 && (
+                  <a href="#" onClick={(e) => { e.preventDefault(); setForgotStep(1); setForgotError(''); }} style={{ color: 'var(--t5)', fontSize: '0.86rem', textDecoration: 'none', fontWeight: '500' }}>
+                    ← Change Index Number
+                  </a>
+                )}
                 <a href="#" onClick={(e) => { e.preventDefault(); setShowForgotPwd(false); setForgotStep(1); setForgotIndex(''); setForgotEmail(''); setForgotError(''); setForgotMsg(''); }} style={{ color: 'var(--blue)', fontSize: '0.86rem', textDecoration: 'none', fontWeight: '600' }}>
                   ← Back to Login
                 </a>
@@ -685,6 +711,7 @@ function StudentPortal({ indexNumber, handleLogout, showAlert, showConfirm }) {
   const [fullName, setFullName] = useState('');
   const [step, setStep] = useState(1);
   const [activeView, setActiveView] = useState('dashboard');
+  const [studentTab, setStudentTab] = useState('consultations');
   const [profilePhoto, setProfilePhoto] = useState(() => localStorage.getItem(`photo_${indexNumber}`) || null);
   const photoInputRef = useRef(null);
 
@@ -1212,8 +1239,10 @@ Approval Status: Pending`;
     rejectionNote = noteMatch ? noteMatch[1].trim() : '';
   }
 
-  const consultations = records.filter(r => !r.diagnosis?.includes('[LAB REPORT') && !isProfileRecord(r.diagnosis));
-  const labReports = records.filter(r => r.diagnosis?.includes('[LAB REPORT'));
+  const consultations = records.filter(r => !r.diagnosis?.includes('[LAB REPORT') && !isProfileRecord(r.diagnosis))
+    .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+  const labReports = records.filter(r => r.diagnosis?.includes('[LAB REPORT'))
+    .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
 
   if (showMedForm) return renderMedicalForm(!hasHistory);
 
@@ -1272,7 +1301,7 @@ Approval Status: Pending`;
             </div>
           )}
 
-          <div className="stat-row">
+          <div className="stat-row doc-mini-stats">
             <div className="stat-card stat-blue"><div className="stat-icon">👤</div><div><div className="stat-num">{studentData.name.split(' ')[0]}</div><div className="stat-label">Student</div></div></div>
             <div className="stat-card stat-purple"><div className="stat-icon">🧪</div><div><div className="stat-num">{labReports.length}</div><div className="stat-label">Lab Reports</div></div></div>
             <div className="stat-card stat-amber"><div className="stat-icon">📋</div><div><div className="stat-num">{approvalStatus === 'Approved' ? 'Approved' : approvalStatus === 'Rejected' ? 'Rejected' : approvalStatus === 'Pending' ? 'Pending' : hasHistory ? 'Completed' : 'Pending'}</div><div className="stat-label">Profile Status</div></div></div>
@@ -1280,18 +1309,52 @@ Approval Status: Pending`;
 
           <div className="content-grid">
             <div className="content-col-wide">
-              <div className="panel">
-                <div className="panel-header">
-                  <h3 className="panel-title">Your Medical Profile</h3>
-                </div>
-                <div className="records-scroll">
-                  {profStatus.record ? (
-                    <RecordItem record={profStatus.record} />
-                  ) : (
-                    <div className="empty-state-box"><div className="empty-big-icon">📋</div><p>No medical profile submitted yet.</p></div>
-                  )}
-                </div>
+              <div className="doc-tab-bar" style={{ marginBottom: 20 }}>
+                <button
+                  className={`doc-tab-btn ${studentTab === 'consultations' ? 'active' : ''}`}
+                  onClick={() => setStudentTab('consultations')}
+                >
+                  🩺 Consultations &amp; Prescriptions
+                </button>
+                <button
+                  className={`doc-tab-btn ${studentTab === 'profile' ? 'active' : ''}`}
+                  onClick={() => setStudentTab('profile')}
+                >
+                  📋 Medical Profile Record
+                </button>
               </div>
+
+              {studentTab === 'consultations' ? (
+                <div className="panel">
+                  <div className="panel-header">
+                    <h3 className="panel-title">Your Doctor Consultations</h3>
+                    <span className="panel-count">{consultations.length}</span>
+                  </div>
+                  <div className="records-scroll">
+                    {consultations.length > 0 ? (
+                      consultations.map((rec, i) => <RecordItem key={i} record={rec} />)
+                    ) : (
+                      <div className="empty-state-box">
+                        <div className="empty-big-icon">🩺</div>
+                        <p>No doctor consultations recorded yet.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="panel">
+                  <div className="panel-header">
+                    <h3 className="panel-title">Your Medical Profile</h3>
+                  </div>
+                  <div className="records-scroll">
+                    {profStatus.record ? (
+                      <RecordItem record={profStatus.record} />
+                    ) : (
+                      <div className="empty-state-box"><div className="empty-big-icon">📋</div><p>No medical profile submitted yet.</p></div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="content-col-narrow">
