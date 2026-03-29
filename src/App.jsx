@@ -146,8 +146,8 @@ const CustomSelect = ({ value, options, onChange, placeholder = "Select..." }) =
       {isOpen && (
         <div className="custom-select-menu slide-top">
           {options.map((opt) => (
-            <div 
-              key={opt} 
+            <div
+              key={opt}
               className={`custom-select-option ${value === opt ? 'selected' : ''}`}
               onClick={() => { onChange(opt); setIsOpen(false); }}
             >
@@ -261,10 +261,10 @@ function App() {
       let otpData = await otpRes.json();
 
       if (otpRes.ok) {
-        // Pre-registered student — OTP email sent
-        setRegIsNew(false);
-        setRegMsg(`Verification code sent to ${regEmail}. Check your inbox.`);
-        setRegStep(2);
+        // Student already has an account — block re-registration
+        setRegError(
+          'This index number is already registered. Please use "Forgot password?" to reset your password instead.'
+        );
       } else if (otpRes.status === 404) {
         // Brand-new student — register with a temporary random password first
         const tempPwd = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2) + '!A1';
@@ -580,10 +580,10 @@ function App() {
             <p className="login-subtext">
               {showRegister
                 ? (regStep === 1 ? 'Verify your university email'
-                    : regStep === 2 ? 'Check your inbox for the code'
+                  : regStep === 2 ? 'Check your inbox for the code'
                     : 'Almost done — set your password')
                 : showForgotPwd ? 'Reset your password'
-                : 'Sign in to your portal'}
+                  : 'Sign in to your portal'}
             </p>
           </div>
 
@@ -669,7 +669,7 @@ function App() {
                     Verify Code <span className="arrow">→</span>
                   </button>
                   <div style={{ textAlign: 'center', marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <a href="#" onClick={(e) => { e.preventDefault(); setRegError(''); setRegMsg(''); handleRegSendOtp({ preventDefault: () => {} }); }} style={{ color: 'var(--t5)', fontSize: '0.82rem', textDecoration: 'none', fontWeight: '500' }}>
+                    <a href="#" onClick={(e) => { e.preventDefault(); setRegError(''); setRegMsg(''); handleRegSendOtp({ preventDefault: () => { } }); }} style={{ color: 'var(--t5)', fontSize: '0.82rem', textDecoration: 'none', fontWeight: '500' }}>
                       Didn't receive? Resend code
                     </a>
                     <a href="#" onClick={(e) => { e.preventDefault(); setRegStep(1); setRegOtp(''); setRegError(''); setRegMsg(''); }} style={{ color: 'var(--blue)', fontSize: '0.82rem', textDecoration: 'none', fontWeight: '600' }}>
@@ -721,15 +721,15 @@ function App() {
               {forgotStep === 2 && (
                 <div className="input-group slide-top">
                   <label>Enter University Email</label>
-                  <input 
-                    type="email" 
-                    value={forgotEmail} 
+                  <input
+                    type="email"
+                    value={forgotEmail}
                     onChange={(e) => {
                       setForgotEmail(e.target.value);
                       if (forgotError) setForgotError('');
-                    }} 
-                    placeholder="e.g. name.24@uom.lk" 
-                    required 
+                    }}
+                    placeholder="e.g. name.24@uom.lk"
+                    required
                   />
                 </div>
               )}
@@ -1609,34 +1609,34 @@ Approval Status: Pending`;
 /* ---- Common Medicine Database ---- */
 const MEDICINE_DB = [
   // Analgesics / Antipyretics
-  'Paracetamol','Ibuprofen','Aspirin','Diclofenac','Naproxen','Mefenamic Acid','Ketorolac','Tramadol','Codeine','Morphine',
+  'Paracetamol', 'Ibuprofen', 'Aspirin', 'Diclofenac', 'Naproxen', 'Mefenamic Acid', 'Ketorolac', 'Tramadol', 'Codeine', 'Morphine',
   // Antibiotics
-  'Amoxicillin','Amoxicillin-Clavulanate','Ampicillin','Azithromycin','Ciprofloxacin','Clarithromycin','Clindamycin',
-  'Doxycycline','Erythromycin','Metronidazole','Norfloxacin','Penicillin V','Tetracycline','Trimethoprim-Sulfamethoxazole',
-  'Cephalexin','Cefuroxime','Ceftriaxone','Gentamicin','Vancomycin','Meropenem',
+  'Amoxicillin', 'Amoxicillin-Clavulanate', 'Ampicillin', 'Azithromycin', 'Ciprofloxacin', 'Clarithromycin', 'Clindamycin',
+  'Doxycycline', 'Erythromycin', 'Metronidazole', 'Norfloxacin', 'Penicillin V', 'Tetracycline', 'Trimethoprim-Sulfamethoxazole',
+  'Cephalexin', 'Cefuroxime', 'Ceftriaxone', 'Gentamicin', 'Vancomycin', 'Meropenem',
   // Antifungals
-  'Clotrimazole','Fluconazole','Ketoconazole','Miconazole','Nystatin','Terbinafine',
+  'Clotrimazole', 'Fluconazole', 'Ketoconazole', 'Miconazole', 'Nystatin', 'Terbinafine',
   // Antivirals
-  'Acyclovir','Oseltamivir','Valacyclovir',
+  'Acyclovir', 'Oseltamivir', 'Valacyclovir',
   // Antihistamines
-  'Cetirizine','Chlorpheniramine','Diphenhydramine','Fexofenadine','Loratadine','Promethazine',
+  'Cetirizine', 'Chlorpheniramine', 'Diphenhydramine', 'Fexofenadine', 'Loratadine', 'Promethazine',
   // GI / Antacids
-  'Antacid (Aluminium Hydroxide)','Domperidone','Esomeprazole','Lactulose','Loperamide','Metoclopramide',
-  'Omeprazole','Pantoprazole','Ranitidine','Bisacodyl','Ondansetron',
+  'Antacid (Aluminium Hydroxide)', 'Domperidone', 'Esomeprazole', 'Lactulose', 'Loperamide', 'Metoclopramide',
+  'Omeprazole', 'Pantoprazole', 'Ranitidine', 'Bisacodyl', 'Ondansetron',
   // Respiratory
-  'Salbutamol','Beclomethasone','Budesonide','Ipratropium','Montelukast','Theophylline',
-  'Dextromethorphan','Guaifenesin','Bromhexine','Cetylpyridinium',
+  'Salbutamol', 'Beclomethasone', 'Budesonide', 'Ipratropium', 'Montelukast', 'Theophylline',
+  'Dextromethorphan', 'Guaifenesin', 'Bromhexine', 'Cetylpyridinium',
   // Cardiovascular
-  'Amlodipine','Atenolol','Atorvastatin','Bisoprolol','Captopril','Enalapril','Furosemide',
-  'Lisinopril','Metoprolol','Nifedipine','Simvastatin','Warfarin','Verapamil',
+  'Amlodipine', 'Atenolol', 'Atorvastatin', 'Bisoprolol', 'Captopril', 'Enalapril', 'Furosemide',
+  'Lisinopril', 'Metoprolol', 'Nifedipine', 'Simvastatin', 'Warfarin', 'Verapamil',
   // Diabetes
-  'Metformin','Glibenclamide','Insulin (Regular)','Insulin (NPH)','Sitagliptin',
+  'Metformin', 'Glibenclamide', 'Insulin (Regular)', 'Insulin (NPH)', 'Sitagliptin',
   // Vitamins / Supplements
-  'Vitamin B Complex','Vitamin C','Vitamin D3','Folic Acid','Ferrous Sulphate','Calcium Carbonate','Zinc Sulphate',
+  'Vitamin B Complex', 'Vitamin C', 'Vitamin D3', 'Folic Acid', 'Ferrous Sulphate', 'Calcium Carbonate', 'Zinc Sulphate',
   // Dermatology
-  'Betamethasone','Hydrocortisone Cream','Permethrin','Calamine Lotion','Mupirocin',
+  'Betamethasone', 'Hydrocortisone Cream', 'Permethrin', 'Calamine Lotion', 'Mupirocin',
   // Others
-  'Oral Rehydration Salts (ORS)','Prednisolone','Dexamethasone','Methylprednisolone',
+  'Oral Rehydration Salts (ORS)', 'Prednisolone', 'Dexamethasone', 'Methylprednisolone',
 ];
 
 /* ---- MedicineInput — autocomplete tag picker ---- */
@@ -1815,9 +1815,9 @@ function DoctorPortal({ username, handleLogout, showAlert, showConfirm }) {
   const [medicines, setMedicines] = useState([]);
   const [voiceTarget, setVoiceTarget] = useState('notes'); // 'notes' | 'prescription'
 
-  const QUICK_SYMPTOMS = ['Fever','Headache','Cough','Sore Throat','Chest Pain','Shortness of Breath',
-    'Nausea','Vomiting','Diarrhea','Fatigue','Dizziness','Rash','Body Aches','Abdominal Pain'];
-  const VISIT_TYPES = ['General','Follow-up','Emergency','Specialist Referral'];
+  const QUICK_SYMPTOMS = ['Fever', 'Headache', 'Cough', 'Sore Throat', 'Chest Pain', 'Shortness of Breath',
+    'Nausea', 'Vomiting', 'Diarrhea', 'Fatigue', 'Dizziness', 'Rash', 'Body Aches', 'Abdominal Pain'];
+  const VISIT_TYPES = ['General', 'Follow-up', 'Emergency', 'Specialist Referral'];
   const SEVERITY_LEVELS = [
     { label: 'Mild', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
     { label: 'Moderate', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
@@ -2111,14 +2111,14 @@ function DoctorPortal({ username, handleLogout, showAlert, showConfirm }) {
 
                           {/* Custom Symptom Add */}
                           {showCustomSymptomField ? (
-                            <input 
+                            <input
                               autoFocus
                               type="text"
                               className="symptom-chip"
-                              style={{ 
-                                background: '#fff', 
-                                border: '1.5px solid var(--blue)', 
-                                cursor: 'text', 
+                              style={{
+                                background: '#fff',
+                                border: '1.5px solid var(--blue)',
+                                cursor: 'text',
                                 padding: '6px 12px',
                                 outline: 'none',
                                 width: '140px'
@@ -2735,8 +2735,8 @@ BCC: ${eVacBCC || 'Not recorded'}\nDPT: ${eVacDPT || 'Not recorded'}\nMR/MMR: ${
                         {student.hasAttachment && (
                           <span className="badge badge-success" style={{ marginRight: 8 }}>📎 Has Report</span>
                         )}
-                        <button 
-                          className="btn-primary" 
+                        <button
+                          className="btn-primary"
                           style={{ padding: '8px 16px', fontSize: '0.9rem' }}
                           onClick={async () => {
                             setActiveView('dashboard');
@@ -2838,174 +2838,174 @@ BCC: ${eVacBCC || 'Not recorded'}\nDPT: ${eVacDPT || 'Not recorded'}\nMR/MMR: ${
                   <>
                     {/* Profile Review Section for Lab Assistant */}
                     {getProfileStatus(student.medicalRecords).record ? (
-                  <div className="panel" style={{ marginTop: 20, marginBottom: 20, border: '1px solid var(--b2)', boxShadow: 'none' }}>
-                    <div className="panel-header" style={{ background: 'var(--b0)', borderRadius: 'var(--r-md) var(--r-md) 0 0', padding: '12px 16px' }}>
-                      <h4 style={{ margin: 0, fontSize: '1rem' }}>Profile Review: {getProfileStatus(student.medicalRecords).status}</h4>
-                    </div>
-                    <div style={{ padding: '16px' }}>
-                      {labProfileEditMode ? (
-                        <>
-                          <div className="setup-steps" style={{ marginTop: 0, marginBottom: 20 }}>
-                            {['Personal Info', 'Family History', 'Medical History', 'Immunisation'].map((title, i) => (
-                              <div key={i} onClick={() => setEditStep(i + 1)} className={`setup-step ${editStep === i + 1 ? 'active' : ''}`} style={{ cursor: 'pointer' }}>
-                                <div className="step-circle">{['👤', '👨‍👩‍👧', '🩺', '💉'][i]}</div>
-                                <div className="step-label">{title}</div>
-                              </div>
-                            ))}
-                          </div>
-
-                          {editStep === 1 && (
-                            <div className="setup-section slide-top">
-                              <h3 className="section-heading">Part 1 — Personal Information</h3>
-                              <div className="input-group">
-                                <label>Full Name *</label>
-                                <input type="text" value={eFullName} onChange={e => setEFullName(e.target.value)} required />
-                              </div>
-                              <div className="form-grid-2">
-                                <div className="input-group"><label>NIC Number *</label><input type="text" value={eNic} onChange={e => setENic(e.target.value)} /></div>
-                                <div className="input-group">
-                                  <label>Faculty *</label>
-                                  <select value={eFaculty} onChange={e => setEFaculty(e.target.value)} className="form-select">
-                                    <option value="">Select Faculty...</option>
-                                    <option value="Engineering">Engineering</option>
-                                    <option value="Architecture">Architecture</option>
-                                    <option value="Information Technology">Information Technology</option>
-                                    <option value="Business">Business</option>
-                                    <option value="Medicine">Medicine</option>
-                                    <option value="Graduate Studies">Graduate Studies</option>
-                                  </select>
-                                </div>
-                                <div className="input-group"><label>Student Tel No</label><input type="text" value={eTelNo} onChange={e => setETelNo(e.target.value)} /></div>
-                                <div className="input-group">
-                                  <label>Date of Birth *</label>
-                                  <input type="date" value={eDob} onChange={e => setEDob(e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                  <label>Sex *</label>
-                                  <select value={eSex} onChange={e => setESex(e.target.value)} className="form-select">
-                                    <option value="">Select...</option><option>Male</option><option>Female</option>
-                                  </select>
-                                </div>
-                                <div className="input-group"><label>Religion</label><input type="text" value={eReligion} onChange={e => setEReligion(e.target.value)} /></div>
-                                <div className="input-group">
-                                  <label>Marital Status</label>
-                                  <select value={eMaritalStatus} onChange={e => setEMaritalStatus(e.target.value)} className="form-select">
-                                    <option>Single</option><option>Married</option>
-                                  </select>
-                                </div>
-                                <div className="input-group"><label>Nationality</label><input type="text" value={eNationality} onChange={e => setENationality(e.target.value)} /></div>
-                                <div className="input-group"><label>Last School Attended</label><input type="text" value={eLastSchool} onChange={e => setELastSchool(e.target.value)} /></div>
-                                <div className="input-group"><label>Number of Siblings</label><input type="number" min="0" value={eSiblings} onChange={e => setESiblings(e.target.value)} /></div>
-                                <div className="input-group"><label>Father's Occupation</label><input type="text" value={eFatherOcc} onChange={e => setEFatherOcc(e.target.value)} /></div>
-                                <div className="input-group"><label>Mother's Occupation</label><input type="text" value={eMotherOcc} onChange={e => setEMotherOcc(e.target.value)} /></div>
-                              </div>
-                              <div className="input-group"><label>Home Address, District, Telephone</label><textarea rows="2" value={eHomeAddress} onChange={e => setEHomeAddress(e.target.value)} /></div>
-
-                              <h3 className="section-heading" style={{ marginTop: 24 }}>Emergency Contact</h3>
-                              <div className="form-grid-2">
-                                <div className="input-group"><label>Contact Name</label><input type="text" value={eEmergName} onChange={e => setEEmergName(e.target.value)} /></div>
-                                <div className="input-group"><label>Relationship</label><input type="text" value={eEmergRel} onChange={e => setEEmergRel(e.target.value)} /></div>
-                                <div className="input-group"><label>Telephone No</label><input type="text" value={eEmergTel} onChange={e => setEEmergTel(e.target.value)} /></div>
-                                <div className="input-group"><label>Address</label><input type="text" value={eEmergAddress} onChange={e => setEEmergAddress(e.target.value)} /></div>
-                              </div>
-                            </div>
-                          )}
-
-                          {editStep === 2 && (
-                            <div className="setup-section slide-top">
-                              <h3 className="section-heading">Family Medical History</h3>
-                              <div className="family-table">
-                                <div className="family-table-header"><span>Member</span><span>Known Medical Conditions</span></div>
-                                {[['Father', eFamFather, setEFamFather], ['Mother', eFamMother, setEFamMother], ['Brothers', eFamBrothers, setEFamBrothers], ['Sisters', eFamSisters, setEFamSisters], ['Other', eFamOther, setEFamOther]].map(([lbl, val, setter]) => (
-                                  <div className="family-table-row" key={lbl}>
-                                    <span className="family-member-label">{lbl}</span>
-                                    <input type="text" value={val} onChange={e => setter(e.target.value)} className="family-input" />
+                      <div className="panel" style={{ marginTop: 20, marginBottom: 20, border: '1px solid var(--b2)', boxShadow: 'none' }}>
+                        <div className="panel-header" style={{ background: 'var(--b0)', borderRadius: 'var(--r-md) var(--r-md) 0 0', padding: '12px 16px' }}>
+                          <h4 style={{ margin: 0, fontSize: '1rem' }}>Profile Review: {getProfileStatus(student.medicalRecords).status}</h4>
+                        </div>
+                        <div style={{ padding: '16px' }}>
+                          {labProfileEditMode ? (
+                            <>
+                              <div className="setup-steps" style={{ marginTop: 0, marginBottom: 20 }}>
+                                {['Personal Info', 'Family History', 'Medical History', 'Immunisation'].map((title, i) => (
+                                  <div key={i} onClick={() => setEditStep(i + 1)} className={`setup-step ${editStep === i + 1 ? 'active' : ''}`} style={{ cursor: 'pointer' }}>
+                                    <div className="step-circle">{['👤', '👨‍👩‍👧', '🩺', '💉'][i]}</div>
+                                    <div className="step-label">{title}</div>
                                   </div>
                                 ))}
                               </div>
-                            </div>
-                          )}
 
-                          {editStep === 3 && (
-                            <div className="setup-section slide-top">
-                              <h3 className="section-heading">Student Medical History</h3>
-                              <div className="medical-history-list">
-                                {[['01', 'Infectious Diseases', 'Mumps, Measles, Rubella, Chicken Pox, Hepatitis, Other', eHist01, setEHist01],
-                                ['02', 'Worm Infestation', 'Round Worm, Hook Worm, Thread Worm, Tape Worm, Filaria, Other', eHist02, setEHist02],
-                                ['03', 'Respiratory', 'Frequent Colds, Hay Fever, Asthma, Pneumonia, T.B., Other', eHist03, setEHist03],
-                                ['04', 'Circulatory', 'Heart Disease, Blood Pressure', eHist04, setEHist04],
-                                ['05', 'E.N.T.', 'Ear Infections, Sinusitis, Tonsillitis, Other', eHist05, setEHist05],
-                                ['06', 'Eye', 'Short Sight, Long Sight, Infections, Injuries, Other', eHist06, setEHist06],
-                                ['07', 'Nervous System', 'Epilepsy, Migraine, Other', eHist07, setEHist07],
-                                ['08', 'Surgical', 'Fractures, Injuries, Operations', eHist08, setEHist08],
-                                ['09', 'Miscellaneous', 'Anaemia, Diabetes, Skin Disorders, Kidney Disease, Depression, Other', eHist09, setEHist09],
-                                ['10', 'Allergic History', 'Drugs / Food allergies', eHist10, setEHist10],
-                                ].map(([num, title, hint, val, setter]) => (
-                                  <div className="med-hist-row" key={num}>
-                                    <div className="med-hist-num">{num}</div>
-                                    <div className="med-hist-content">
-                                      <div className="med-hist-title">{title}</div>
-                                      <div className="med-hist-hint">{hint}</div>
-                                      <input type="text" value={val} onChange={e => setter(e.target.value)} className="med-hist-input" />
+                              {editStep === 1 && (
+                                <div className="setup-section slide-top">
+                                  <h3 className="section-heading">Part 1 — Personal Information</h3>
+                                  <div className="input-group">
+                                    <label>Full Name *</label>
+                                    <input type="text" value={eFullName} onChange={e => setEFullName(e.target.value)} required />
+                                  </div>
+                                  <div className="form-grid-2">
+                                    <div className="input-group"><label>NIC Number *</label><input type="text" value={eNic} onChange={e => setENic(e.target.value)} /></div>
+                                    <div className="input-group">
+                                      <label>Faculty *</label>
+                                      <select value={eFaculty} onChange={e => setEFaculty(e.target.value)} className="form-select">
+                                        <option value="">Select Faculty...</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="Architecture">Architecture</option>
+                                        <option value="Information Technology">Information Technology</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Medicine">Medicine</option>
+                                        <option value="Graduate Studies">Graduate Studies</option>
+                                      </select>
                                     </div>
+                                    <div className="input-group"><label>Student Tel No</label><input type="text" value={eTelNo} onChange={e => setETelNo(e.target.value)} /></div>
+                                    <div className="input-group">
+                                      <label>Date of Birth *</label>
+                                      <input type="date" value={eDob} onChange={e => setEDob(e.target.value)} />
+                                    </div>
+                                    <div className="input-group">
+                                      <label>Sex *</label>
+                                      <select value={eSex} onChange={e => setESex(e.target.value)} className="form-select">
+                                        <option value="">Select...</option><option>Male</option><option>Female</option>
+                                      </select>
+                                    </div>
+                                    <div className="input-group"><label>Religion</label><input type="text" value={eReligion} onChange={e => setEReligion(e.target.value)} /></div>
+                                    <div className="input-group">
+                                      <label>Marital Status</label>
+                                      <select value={eMaritalStatus} onChange={e => setEMaritalStatus(e.target.value)} className="form-select">
+                                        <option>Single</option><option>Married</option>
+                                      </select>
+                                    </div>
+                                    <div className="input-group"><label>Nationality</label><input type="text" value={eNationality} onChange={e => setENationality(e.target.value)} /></div>
+                                    <div className="input-group"><label>Last School Attended</label><input type="text" value={eLastSchool} onChange={e => setELastSchool(e.target.value)} /></div>
+                                    <div className="input-group"><label>Number of Siblings</label><input type="number" min="0" value={eSiblings} onChange={e => setESiblings(e.target.value)} /></div>
+                                    <div className="input-group"><label>Father's Occupation</label><input type="text" value={eFatherOcc} onChange={e => setEFatherOcc(e.target.value)} /></div>
+                                    <div className="input-group"><label>Mother's Occupation</label><input type="text" value={eMotherOcc} onChange={e => setEMotherOcc(e.target.value)} /></div>
                                   </div>
-                                ))}
-                              </div>
-                              <div className="form-grid-2" style={{ marginTop: 20 }}>
-                                <div className="input-group"><label>Menstrual History (Female only)</label><input type="text" value={eMenstrual} onChange={e => setEMenstrual(e.target.value)} /></div>
-                                <div className="input-group"><label>Disability (if any)</label><input type="text" value={eDisability} onChange={e => setEDisability(e.target.value)} /></div>
-                              </div>
-                            </div>
-                          )}
+                                  <div className="input-group"><label>Home Address, District, Telephone</label><textarea rows="2" value={eHomeAddress} onChange={e => setEHomeAddress(e.target.value)} /></div>
 
-                          {editStep === 4 && (
-                            <div className="setup-section slide-top">
-                              <h3 className="section-heading">Immunisation Record</h3>
-                              <div className="vaccine-table">
-                                <div className="vaccine-table-header"><span>Vaccination</span><span>Date Administered</span></div>
-                                {[['BCC', eVacBCC, setEVacBCC], ['DPT', eVacDPT, setEVacDPT], ['MR / MMR', eVacMMR, setEVacMMR], ['Rubella', eVacRubella, setEVacRubella], ['Hepatitis B', eVacHepB, setEVacHepB], ['Chickenpox', eVacChicken, setEVacChicken]].map(([lbl, val, setter]) => (
-                                  <div className="vaccine-row" key={lbl}>
-                                    <span className="vaccine-name">{lbl}</span>
-                                    <input type="date" value={val} onChange={e => setter(e.target.value)} className="vaccine-input" />
+                                  <h3 className="section-heading" style={{ marginTop: 24 }}>Emergency Contact</h3>
+                                  <div className="form-grid-2">
+                                    <div className="input-group"><label>Contact Name</label><input type="text" value={eEmergName} onChange={e => setEEmergName(e.target.value)} /></div>
+                                    <div className="input-group"><label>Relationship</label><input type="text" value={eEmergRel} onChange={e => setEEmergRel(e.target.value)} /></div>
+                                    <div className="input-group"><label>Telephone No</label><input type="text" value={eEmergTel} onChange={e => setEEmergTel(e.target.value)} /></div>
+                                    <div className="input-group"><label>Address</label><input type="text" value={eEmergAddress} onChange={e => setEEmergAddress(e.target.value)} /></div>
                                   </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+                                </div>
+                              )}
 
-                          <div style={{ display: 'flex', gap: 10, marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
-                            <button className="btn-primary" onClick={() => handlePatientAction('SaveEdit')}>Save Changes</button>
-                            <button className="btn-outline-secondary" onClick={() => setLabProfileEditMode(false)}>Cancel Edit</button>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <RecordItem record={getProfileStatus(student.medicalRecords).record} />
-                          <div style={{ display: 'flex', gap: 12, marginTop: 16, flexWrap: 'wrap' }}>
-                            {getProfileStatus(student.medicalRecords).status !== 'Approved' && (
-                              <>
-                                <button className="btn-outline-success" style={{ flex: 1 }} onClick={() => handlePatientAction('Approve')}>✓ Approve</button>
-                                <button className="btn-outline-danger" style={{ flex: 1 }} onClick={() => handlePatientAction('Reject')}>❌ Reject</button>
-                              </>
-                            )}
-                            <button className="btn-outline-secondary" style={{ flex: 1 }} onClick={startEditProfile}>✏️ Edit Profile</button>
-                            <button className="btn-outline-secondary" style={{ flex: 1, color: 'var(--red)' }} onClick={() => handlePatientAction('Delete')}>🗑️ Delete</button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="incomplete-banner" style={{ marginTop: 20, marginBottom: 20 }}>
-                    <div className="incomplete-banner-left">
-                      <div className="incomplete-banner-icon">⏳</div>
-                      <div>
-                        <div className="incomplete-banner-title">Profile Pending Student Action</div>
-                        <div className="incomplete-banner-text">This student has not submitted their medical profile and PDF report yet.</div>
+                              {editStep === 2 && (
+                                <div className="setup-section slide-top">
+                                  <h3 className="section-heading">Family Medical History</h3>
+                                  <div className="family-table">
+                                    <div className="family-table-header"><span>Member</span><span>Known Medical Conditions</span></div>
+                                    {[['Father', eFamFather, setEFamFather], ['Mother', eFamMother, setEFamMother], ['Brothers', eFamBrothers, setEFamBrothers], ['Sisters', eFamSisters, setEFamSisters], ['Other', eFamOther, setEFamOther]].map(([lbl, val, setter]) => (
+                                      <div className="family-table-row" key={lbl}>
+                                        <span className="family-member-label">{lbl}</span>
+                                        <input type="text" value={val} onChange={e => setter(e.target.value)} className="family-input" />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {editStep === 3 && (
+                                <div className="setup-section slide-top">
+                                  <h3 className="section-heading">Student Medical History</h3>
+                                  <div className="medical-history-list">
+                                    {[['01', 'Infectious Diseases', 'Mumps, Measles, Rubella, Chicken Pox, Hepatitis, Other', eHist01, setEHist01],
+                                    ['02', 'Worm Infestation', 'Round Worm, Hook Worm, Thread Worm, Tape Worm, Filaria, Other', eHist02, setEHist02],
+                                    ['03', 'Respiratory', 'Frequent Colds, Hay Fever, Asthma, Pneumonia, T.B., Other', eHist03, setEHist03],
+                                    ['04', 'Circulatory', 'Heart Disease, Blood Pressure', eHist04, setEHist04],
+                                    ['05', 'E.N.T.', 'Ear Infections, Sinusitis, Tonsillitis, Other', eHist05, setEHist05],
+                                    ['06', 'Eye', 'Short Sight, Long Sight, Infections, Injuries, Other', eHist06, setEHist06],
+                                    ['07', 'Nervous System', 'Epilepsy, Migraine, Other', eHist07, setEHist07],
+                                    ['08', 'Surgical', 'Fractures, Injuries, Operations', eHist08, setEHist08],
+                                    ['09', 'Miscellaneous', 'Anaemia, Diabetes, Skin Disorders, Kidney Disease, Depression, Other', eHist09, setEHist09],
+                                    ['10', 'Allergic History', 'Drugs / Food allergies', eHist10, setEHist10],
+                                    ].map(([num, title, hint, val, setter]) => (
+                                      <div className="med-hist-row" key={num}>
+                                        <div className="med-hist-num">{num}</div>
+                                        <div className="med-hist-content">
+                                          <div className="med-hist-title">{title}</div>
+                                          <div className="med-hist-hint">{hint}</div>
+                                          <input type="text" value={val} onChange={e => setter(e.target.value)} className="med-hist-input" />
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <div className="form-grid-2" style={{ marginTop: 20 }}>
+                                    <div className="input-group"><label>Menstrual History (Female only)</label><input type="text" value={eMenstrual} onChange={e => setEMenstrual(e.target.value)} /></div>
+                                    <div className="input-group"><label>Disability (if any)</label><input type="text" value={eDisability} onChange={e => setEDisability(e.target.value)} /></div>
+                                  </div>
+                                </div>
+                              )}
+
+                              {editStep === 4 && (
+                                <div className="setup-section slide-top">
+                                  <h3 className="section-heading">Immunisation Record</h3>
+                                  <div className="vaccine-table">
+                                    <div className="vaccine-table-header"><span>Vaccination</span><span>Date Administered</span></div>
+                                    {[['BCC', eVacBCC, setEVacBCC], ['DPT', eVacDPT, setEVacDPT], ['MR / MMR', eVacMMR, setEVacMMR], ['Rubella', eVacRubella, setEVacRubella], ['Hepatitis B', eVacHepB, setEVacHepB], ['Chickenpox', eVacChicken, setEVacChicken]].map(([lbl, val, setter]) => (
+                                      <div className="vaccine-row" key={lbl}>
+                                        <span className="vaccine-name">{lbl}</span>
+                                        <input type="date" value={val} onChange={e => setter(e.target.value)} className="vaccine-input" />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              <div style={{ display: 'flex', gap: 10, marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+                                <button className="btn-primary" onClick={() => handlePatientAction('SaveEdit')}>Save Changes</button>
+                                <button className="btn-outline-secondary" onClick={() => setLabProfileEditMode(false)}>Cancel Edit</button>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <RecordItem record={getProfileStatus(student.medicalRecords).record} />
+                              <div style={{ display: 'flex', gap: 12, marginTop: 16, flexWrap: 'wrap' }}>
+                                {getProfileStatus(student.medicalRecords).status !== 'Approved' && (
+                                  <>
+                                    <button className="btn-outline-success" style={{ flex: 1 }} onClick={() => handlePatientAction('Approve')}>✓ Approve</button>
+                                    <button className="btn-outline-danger" style={{ flex: 1 }} onClick={() => handlePatientAction('Reject')}>❌ Reject</button>
+                                  </>
+                                )}
+                                <button className="btn-outline-secondary" style={{ flex: 1 }} onClick={startEditProfile}>✏️ Edit Profile</button>
+                                <button className="btn-outline-secondary" style={{ flex: 1, color: 'var(--red)' }} onClick={() => handlePatientAction('Delete')}>🗑️ Delete</button>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )}
+                    ) : (
+                      <div className="incomplete-banner" style={{ marginTop: 20, marginBottom: 20 }}>
+                        <div className="incomplete-banner-left">
+                          <div className="incomplete-banner-icon">⏳</div>
+                          <div>
+                            <div className="incomplete-banner-title">Profile Pending Student Action</div>
+                            <div className="incomplete-banner-text">This student has not submitted their medical profile and PDF report yet.</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -3013,26 +3013,26 @@ BCC: ${eVacBCC || 'Not recorded'}\nDPT: ${eVacDPT || 'Not recorded'}\nMR/MMR: ${
                   <>
                     <div className="input-group">
                       <label>Report Type / Title</label>
-                  <input type="text" value={reportTitle} onChange={e => setReportTitle(e.target.value)} placeholder="e.g. Full Blood Count" />
-                </div>
+                      <input type="text" value={reportTitle} onChange={e => setReportTitle(e.target.value)} placeholder="e.g. Full Blood Count" />
+                    </div>
 
-                <div className="input-group file-upload-group">
-                  <label>Upload Report File (PDF/Image)</label>
-                  <div className="file-drop-area">
-                    <span className="file-icon">📁</span>
-                    <span className="file-msg">{fileName ? fileName : 'Click to select or drag and drop a file'}</span>
-                    <input
-                      type="file"
-                      className="file-input-hidden"
-                      onChange={handleFileChange}
-                      accept=".pdf,image/*"
-                    />
-                  </div>
-                </div>
+                    <div className="input-group file-upload-group">
+                      <label>Upload Report File (PDF/Image)</label>
+                      <div className="file-drop-area">
+                        <span className="file-icon">📁</span>
+                        <span className="file-msg">{fileName ? fileName : 'Click to select or drag and drop a file'}</span>
+                        <input
+                          type="file"
+                          className="file-input-hidden"
+                          onChange={handleFileChange}
+                          accept=".pdf,image/*"
+                        />
+                      </div>
+                    </div>
 
-                <button className="btn-primary w-full" onClick={submitLabReport}>
-                  Upload Report to Medical Record 📤
-                </button>
+                    <button className="btn-primary w-full" onClick={submitLabReport}>
+                      Upload Report to Medical Record 📤
+                    </button>
                   </>
                 )}
               </div>
@@ -3141,7 +3141,7 @@ function LogsDashboard() {
             let name = m[1].trim();
             // Edge case: if no dosage or freq but there is duration
             if (name.includes(' for ')) name = name.split(' for ')[0].trim();
-            
+
             if (name) medMap[name] = (medMap[name] || 0) + 1;
           }
         });
@@ -3275,16 +3275,16 @@ function LogsDashboard() {
   const TimelineChart = ({ data }) => {
     if (!data || data.length === 0) return null;
     const max = Math.max(...data.map(d => d[1]), 1);
-    
+
     // H=160 (taller chart), padTop=60 (massive clearance above peak), padBottom=25 (clearance for axis separation)
-    const W = 520, H = 160, padX = 20, padBottom = 25, padTop = 60; 
-    
+    const W = 520, H = 160, padX = 20, padBottom = 25, padTop = 60;
+
     const getY = (val) => H - padBottom - Math.round((val / max) * (H - padBottom - padTop));
-    
+
     const pts = data.map(([, v], i) => `${padX + i * ((W - 2 * padX) / (data.length - 1))},${getY(v)}`);
     const line = pts.join(' ');
     const area = `${pts[0]} ` + line + ` ${padX + (data.length - 1) * ((W - 2 * padX) / (data.length - 1))},${H - padBottom} ${padX},${H - padBottom}`;
-    
+
     return (
       <div style={{ overflowX: 'auto', paddingTop: '24px' }}>
         <svg width={W} height={H + 20} style={{ display: 'block' }}>
@@ -3504,96 +3504,17 @@ function SettingsPanel({ role }) {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const [otpMode, setOtpMode] = useState(false);
-  const [otpCode, setOtpCode] = useState('');
-  const [studentEmail, setStudentEmail] = useState('');
-
-  useEffect(() => {
-    if (role === 'Student') {
-      const userId = localStorage.getItem('auth_username');
-      fetch(`${API_BASE_URL}/student/${userId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.email) setStudentEmail(data.email);
-        })
-        .catch(() => {});
-    }
-  }, [role]);
-
   const handleChange = async (e) => {
     e.preventDefault();
     setMsg(null);
-    const userId = localStorage.getItem('auth_username');
-
-    if (role === 'Student' && otpMode) {
-      if (!otpCode || otpCode.length < 6) {
-        setMsg({ type: 'error', text: 'Please enter a valid 6-digit code.' });
-        return;
-      }
-      try {
-        const res = await fetch(`${API_BASE_URL}/student/reset-password-with-otp`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: studentEmail,
-            indexNumber: userId,
-            otp: otpCode,
-            newPassword: newPwd
-          })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setMsg({ type: 'success', text: '✓ Password changed successfully! Use your new password on the next login.' });
-          setCurrentPwd(''); setNewPwd(''); setConfirmPwd('');
-          setOtpCode(''); setOtpMode(false);
-        } else {
-          setMsg({ type: 'error', text: data.error || 'Invalid OTP code.' });
-        }
-      } catch {
-        setMsg({ type: 'error', text: 'Network error.' });
-      }
-      return;
-    }
-
     if (newPwd.length < 6) { setMsg({ type: 'error', text: 'New password must be at least 6 characters.' }); return; }
     if (newPwd === currentPwd) { setMsg({ type: 'error', text: 'New password must be different from the current password.' }); return; }
     if (newPwd !== confirmPwd) { setMsg({ type: 'error', text: 'Passwords do not match.' }); return; }
 
-    if (role === 'Student') {
-      try {
-        const checkRes = await fetch(`${API_BASE_URL}/student/${userId}/login`, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ password: currentPwd })
-        });
-        if (!checkRes.ok) {
-           setMsg({ type: 'error', text: 'Incorrect current password.' });
-           return;
-        }
-        if (!studentEmail) {
-           setMsg({ type: 'error', text: 'Could not fetch your email address.' });
-           return;
-        }
-        const otpRes = await fetch(`${API_BASE_URL}/student/send-otp`, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ email: studentEmail, index: userId })
-        });
-        if (otpRes.ok) {
-           setOtpMode(true);
-           setMsg({ type: 'success', text: `Verification code sent to ${studentEmail}` });
-        } else {
-           const err = await otpRes.json();
-           setMsg({ type: 'error', text: err.error || 'Failed to send OTP.' });
-        }
-      } catch (e) {
-        setMsg({ type: 'error', text: 'Network error while verifying.' });
-      }
-      return;
-    }
-
+    const userId = localStorage.getItem('auth_username');
     let endpoint = '';
-    if (role === 'Doctor') endpoint = `/doctors/${userId}/password`;
+    if (role === 'Student') endpoint = `/student/${userId}/password`;
+    else if (role === 'Doctor') endpoint = `/doctors/${userId}/password`;
     else if (role === 'Lab Assistant') endpoint = `/labassistant/${userId}/password`;
 
     try {
@@ -3644,83 +3565,54 @@ function SettingsPanel({ role }) {
         )}
 
         <form onSubmit={handleChange} className="settings-form">
-          {!otpMode ? (
-            <>
-              <div className="input-group">
-                <label>Current Password</label>
-                <div className="pwd-input-wrap">
-                  <input
-                    type={showCurrent ? 'text' : 'password'}
-                    value={currentPwd}
-                    onChange={e => setCurrentPwd(e.target.value)}
-                    placeholder="Enter your current password"
-                    required
-                  />
-                  <button type="button" className="pwd-eye-btn" onClick={() => setShowCurrent(v => !v)} tabIndex={-1}>
-                    {showCurrent ? <EyeOff /> : <EyeOpen />}
-                  </button>
-                </div>
-              </div>
-              <div className="input-group">
-                <label>New Password</label>
-                <div className="pwd-input-wrap">
-                  <input
-                    type={showNew ? 'text' : 'password'}
-                    value={newPwd}
-                    onChange={e => setNewPwd(e.target.value)}
-                    placeholder="Minimum 6 characters"
-                    required
-                  />
-                  <button type="button" className="pwd-eye-btn" onClick={() => setShowNew(v => !v)} tabIndex={-1}>
-                    {showNew ? <EyeOff /> : <EyeOpen />}
-                  </button>
-                </div>
-              </div>
-              <div className="input-group">
-                <label>Confirm New Password</label>
-                <div className="pwd-input-wrap">
-                  <input
-                    type={showConfirm ? 'text' : 'password'}
-                    value={confirmPwd}
-                    onChange={e => setConfirmPwd(e.target.value)}
-                    placeholder="Re-enter your new password"
-                    required
-                  />
-                  <button type="button" className="pwd-eye-btn" onClick={() => setShowConfirm(v => !v)} tabIndex={-1}>
-                    {showConfirm ? <EyeOff /> : <EyeOpen />}
-                  </button>
-                </div>
-              </div>
-              <button type="submit" className="btn-primary" style={{ width: 'auto', padding: '12px 36px' }}>
-                {role === 'Student' ? 'Send Verification Code 📧' : 'Update Password 🔐'}
+          <div className="input-group">
+            <label>Current Password</label>
+            <div className="pwd-input-wrap">
+              <input
+                type={showCurrent ? 'text' : 'password'}
+                value={currentPwd}
+                onChange={e => setCurrentPwd(e.target.value)}
+                placeholder="Enter your current password"
+                required
+              />
+              <button type="button" className="pwd-eye-btn" onClick={() => setShowCurrent(v => !v)} tabIndex={-1}>
+                {showCurrent ? <EyeOff /> : <EyeOpen />}
               </button>
-            </>
-          ) : (
-            <>
-              <div className="input-group">
-                <label>Verification Code sent to {studentEmail}</label>
-                <input
-                  type="text"
-                  value={otpCode}
-                  onChange={e => setOtpCode(e.target.value)}
-                  placeholder="Enter 6-digit OTP code"
-                  required
-                />
-              </div>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button type="submit" className="btn-primary" style={{ flex: 1, padding: '12px' }}>
-                  Verify & Update Password ✨
-                </button>
-                <button type="button" onClick={() => setOtpMode(false)} style={{
-                  padding: '12px 24px', borderRadius: 'var(--r-md)',
-                  background: 'none', border: '1.5px solid rgba(100,116,139,0.3)',
-                  color: 'var(--t5)', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit'
-                }}>
-                  Cancel
-                </button>
-              </div>
-            </>
-          )}
+            </div>
+          </div>
+          <div className="input-group">
+            <label>New Password</label>
+            <div className="pwd-input-wrap">
+              <input
+                type={showNew ? 'text' : 'password'}
+                value={newPwd}
+                onChange={e => setNewPwd(e.target.value)}
+                placeholder="Minimum 6 characters"
+                required
+              />
+              <button type="button" className="pwd-eye-btn" onClick={() => setShowNew(v => !v)} tabIndex={-1}>
+                {showNew ? <EyeOff /> : <EyeOpen />}
+              </button>
+            </div>
+          </div>
+          <div className="input-group">
+            <label>Confirm New Password</label>
+            <div className="pwd-input-wrap">
+              <input
+                type={showConfirm ? 'text' : 'password'}
+                value={confirmPwd}
+                onChange={e => setConfirmPwd(e.target.value)}
+                placeholder="Re-enter your new password"
+                required
+              />
+              <button type="button" className="pwd-eye-btn" onClick={() => setShowConfirm(v => !v)} tabIndex={-1}>
+                {showConfirm ? <EyeOff /> : <EyeOpen />}
+              </button>
+            </div>
+          </div>
+          <button type="submit" className="btn-primary" style={{ width: 'auto', padding: '12px 36px' }}>
+            Update Password 🔐
+          </button>
         </form>
       </div>
     </div>
@@ -3838,27 +3730,27 @@ function RecordItem({ record }) {
 
   const renderConsultationData = (text) => {
     if (!text) return null;
-    
+
     // Check if it matches the current structured format saved by the Doctor Portal
     if (text.includes('[Visit Type:') || text.includes('Symptoms:')) {
       let visitType = 'General';
       let severity = 'Not Specified';
       let symptoms = 'None recorded';
       let notes = text;
-      
+
       const typeMatch = text.match(/\[Visit Type: (.*?)\]/);
       if (typeMatch) visitType = typeMatch[1];
-      
+
       const sevMatch = text.match(/\[Severity: (.*?)\]/);
       if (sevMatch) severity = sevMatch[1];
-      
+
       const sympMatch = text.match(/Symptoms: (.*?)(?=\nNotes:|\n\[|$)/);
       if (sympMatch) symptoms = sympMatch[1].trim();
-      
+
       const notesMatch = text.match(/Notes: ([\s\S]*)/);
       if (notesMatch) notes = notesMatch[1].trim();
       else if (typeMatch || sevMatch || sympMatch) {
-         notes = text.replace(/\[Visit Type: .*?\]|\[Severity: .*?\]|Symptoms: .*?(?=\n|$)/g, '').trim();
+        notes = text.replace(/\[Visit Type: .*?\]|\[Severity: .*?\]|Symptoms: .*?(?=\n|$)/g, '').trim();
       }
 
       const getSeverityClass = (sev) => {
@@ -3890,7 +3782,7 @@ function RecordItem({ record }) {
         </div>
       );
     }
-    
+
     // Fallback for older free-text format or unrecognised notes
     return (
       <div className="consult-grid">
@@ -3936,8 +3828,8 @@ function RecordItem({ record }) {
 
           {record.prescription && record.prescription !== 'N/A' && (
             <div className="consult-prescription">
-               <span className="consult-lbl">Prescription</span>
-               <span className="consult-val" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{record.prescription}</span>
+              <span className="consult-lbl">Prescription</span>
+              <span className="consult-val" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{record.prescription}</span>
             </div>
           )}
         </div>
