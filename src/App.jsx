@@ -3627,6 +3627,7 @@ function RecordItem({ record }) {
   const isLab = record.diagnosis?.includes('[LAB REPORT');
   const isHistory = isProfileRecord(record.diagnosis);
   const [pdfOpen, setPdfOpen] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(false);
 
   // Close on ESC key
   React.useEffect(() => {
@@ -3753,42 +3754,96 @@ function RecordItem({ record }) {
         notes = text.replace(/\[Visit Type: .*?\]|\[Severity: .*?\]|Symptoms: .*?(?=\n|$)/g, '').trim();
       }
 
-      const getSeverityClass = (sev) => {
+      const getSeverityMeta = (sev) => {
         const s = sev.toLowerCase();
-        if (s.includes('mild')) return 'severity-mild';
-        if (s.includes('moderate')) return 'severity-moderate';
-        if (s.includes('severe')) return 'severity-severe';
-        return 'severity-mild'; // default styling if unknown
+        if (s.includes('mild')) return { cls: 'severity-mild', icon: '🟢', label: 'Mild Condition' };
+        if (s.includes('moderate')) return { cls: 'severity-moderate', icon: '🟡', label: 'Moderate Condition' };
+        if (s.includes('severe')) return { cls: 'severity-severe', icon: '🔴', label: 'Severe Condition' };
+        return { cls: 'severity-mild', icon: '⚪', label: sev };
       };
 
+      const sevMeta = getSeverityMeta(severity);
+
+      // Parse symptoms into list items
+      const symptomList = symptoms
+        .split(/,|;/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const getSymptomIndicator = () => {
+        const sympLower = symptoms.toLowerCase();
+        if (sympLower.includes('none') || sympLower === 'none recorded' || severity.toLowerCase() === 'none') {
+           return { text: '🟢 Normal', color: '#22C55E' };
+        }
+        if (severity.toLowerCase().includes('severe')) {
+           return { text: '🔴 Severe', color: '#EF4444' };
+        }
+        return { text: '🟡 Mild', color: '#EAB308' };
+      };
+      const sympInd = getSymptomIndicator();
+
       return (
-        <div className="consult-grid">
-          <div className="consult-row">
-            <span className="consult-lbl">Visit Type</span>
-            <span className="consult-val">{visitType}</span>
-          </div>
-          <div className="consult-row">
-            <span className="consult-lbl">Severity</span>
-            <span className={`consult-val severity-badge ${getSeverityClass(severity)}`}>{severity}</span>
-          </div>
-          <div className="consult-row">
-            <span className="consult-lbl">Symptoms</span>
-            <span className="consult-val">{symptoms}</span>
-          </div>
-          <div className="consult-row consult-notes">
-            <span className="consult-lbl">Clinical Notes</span>
-            <span className="consult-val" style={{ whiteSpace: 'pre-wrap' }}>{notes || 'No further notes provided.'}</span>
-          </div>
+        <div className="patient-status-card">
+          <div className="patient-status-header">Patient Status / Health Summary</div>
+          <table className="patient-status-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+                <th>Indicator</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Visit Type</td>
+                <td><span className="patient-value-text">{visitType} Visit</span></td>
+                <td>
+                  <span className="status-indicator">
+                    {sevMeta.icon} {sevMeta.label}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>Symptoms</td>
+                <td>
+                  {symptomList.length > 1 ? (
+                    <ul style={{ margin: 0, paddingLeft: '20px' }} className="patient-value-text">
+                      {symptomList.map((s, i) => <li key={i}>{s}</li>)}
+                    </ul>
+                  ) : (
+                    <span className="patient-value-text">{symptoms}</span>
+                  )}
+                </td>
+                <td>
+                  <span className="status-indicator" style={{ color: sympInd.color }}>
+                    {sympInd.text}
+                  </span>
+                </td>
+              </tr>
+              {notes && notes !== 'No further notes provided.' ? (
+                <tr>
+                  <td>Clinical Notes</td>
+                  <td><span className="patient-value-text">{notes}</span></td>
+                  <td>—</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
         </div>
       );
     }
 
     // Fallback for older free-text format or unrecognised notes
     return (
-      <div className="consult-grid">
-        <div className="consult-row consult-notes">
-          <span className="consult-lbl">Notes</span>
-          <span className="consult-val" style={{ whiteSpace: 'pre-wrap' }}>{text}</span>
+      <div className="consult-card">
+        <div className="consult-section">
+          <div className="consult-section-header">
+            <span className="consult-section-icon">📝</span>
+            <span className="consult-section-title">Notes</span>
+          </div>
+          <div className="consult-section-body">
+            <span className="consult-section-text" style={{ whiteSpace: 'pre-wrap' }}>{text}</span>
+          </div>
         </div>
       </div>
     );
@@ -3797,42 +3852,69 @@ function RecordItem({ record }) {
   return (
     <>
       <div className={`record-item ${typeClass}`}>
-        <div className="record-header">
+        <div className="record-header" onClick={() => setCollapsed(c => !c)} style={{ cursor: 'pointer' }}>
           <span className="record-date">📅 {date}</span>
-          <span className={`badge ${typeClass}-badge`}>{typeLabel}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span className={`badge ${typeClass}-badge`}>{typeLabel}</span>
+            <span className={`record-collapse-arrow ${collapsed ? 'collapsed' : ''}`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </div>
         </div>
-        <div className="record-body">
-          {isHistory ? (
-            <div style={{ marginTop: 10 }}>{renderProfileSections(displayText)}</div>
-          ) : (
-            renderConsultationData(displayText)
-          )}
+        {!collapsed && (
+          <div className="record-body">
+            {isHistory ? (
+              <div style={{ marginTop: 10 }}>{renderProfileSections(displayText)}</div>
+            ) : (
+              renderConsultationData(displayText)
+            )}
 
-          {attachedFile && (
-            <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-              <button
-                onClick={() => setPdfOpen(true)}
-                className="pdf-view-btn"
-              >
-                📄 View PDF
-              </button>
-              <button
-                onClick={handleDownload}
-                className="pdf-dl-btn"
-              >
-                ⬇️ Download
-              </button>
-              <span style={{ fontSize: '0.78rem', color: 'var(--t3)' }}>📎 {attachedFile.name}</span>
-            </div>
-          )}
+            {attachedFile && (
+              <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                <button
+                  onClick={() => setPdfOpen(true)}
+                  className="pdf-view-btn"
+                >
+                  📄 View PDF
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="pdf-dl-btn"
+                >
+                  ⬇️ Download
+                </button>
+                <span style={{ fontSize: '0.78rem', color: 'var(--t3)' }}>📎 {attachedFile.name}</span>
+              </div>
+            )}
 
-          {record.prescription && record.prescription !== 'N/A' && (
-            <div className="consult-prescription">
-              <span className="consult-lbl">Prescription</span>
-              <span className="consult-val" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{record.prescription}</span>
-            </div>
-          )}
-        </div>
+            {record.prescription && record.prescription !== 'N/A' && (
+              <div className="consult-prescription-card">
+                <div className="consult-prescription-header">
+                  <span className="consult-presc-icon">💊</span>
+                  <span className="consult-presc-title">Prescription</span>
+                </div>
+                <div className="consult-presc-divider" />
+                <div className="consult-presc-items">
+                  {record.prescription.split('\n').filter(Boolean).map((line, i) => {
+                    const clean = line.replace(/^[•\-\*]\s*/, '').trim();
+                    if (!clean) return null;
+                    const dashSplit = clean.split(/—|-(?!\d)/);
+                    const drugName = dashSplit[0].trim();
+                    const rest = dashSplit.slice(1).join(' ').trim();
+                    return (
+                      <div className="consult-presc-item" key={i}>
+                        <span className="consult-presc-drug">{drugName}</span>
+                        {rest && <span className="consult-presc-detail">{rest}</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── Fullscreen PDF modal ── */}

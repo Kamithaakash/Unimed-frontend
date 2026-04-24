@@ -4290,12 +4290,267 @@ button.s-nav-item {
 /* ============================================================
    CONSULTATION RECORDS GRID
    ============================================================ */
+/* ============================================================
+   CONSULTATION CARD — Redesigned
+   ============================================================ */
+
+/* Collapse arrow on record header */
+.record-collapse-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--t5);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.record-collapse-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+/* Main card container */
+.consult-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--white);
+  border: 1px solid rgba(203, 220, 245, 0.6);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-top: 12px;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
+}
+
+[data-theme='dark'] .consult-card {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(100, 116, 139, 0.25);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero row: visit type + severity */
+.consult-card-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(241, 245, 255, 0.7);
+  border-bottom: 1px solid rgba(203, 220, 245, 0.5);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+[data-theme='dark'] .consult-card-hero {
+  background: rgba(30, 41, 59, 0.5);
+  border-bottom-color: rgba(100, 116, 139, 0.2);
+}
+
+.consult-visit-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.consult-visit-icon {
+  font-size: 1.05rem;
+}
+
+.consult-visit-label {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: var(--t9);
+  letter-spacing: -0.2px;
+}
+
+[data-theme='dark'] .consult-visit-label { color: #e2e8f0; }
+
+/* Severity pill */
+.consult-severity-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  flex-shrink: 0;
+}
+
+.consult-sev-icon {
+  font-size: 0.85rem;
+}
+
+.severity-mild {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.severity-moderate {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.severity-severe {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.22);
+}
+
+[data-theme='dark'] .severity-mild   { background: rgba(16, 185, 129, 0.18); color: #34d399; }
+[data-theme='dark'] .severity-moderate { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
+[data-theme='dark'] .severity-severe { background: rgba(239, 68, 68, 0.18); color: #f87171; }
+
+/* Section blocks */
+.consult-section {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(203, 220, 245, 0.4);
+}
+
+.consult-section:last-child {
+  border-bottom: none;
+}
+
+[data-theme='dark'] .consult-section {
+  border-bottom-color: rgba(100, 116, 139, 0.15);
+}
+
+.consult-section-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.consult-section-icon {
+  font-size: 0.9rem;
+}
+
+.consult-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--t5);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.consult-section-body {
+  padding-left: 24px;
+}
+
+.consult-section-text {
+  font-size: 0.93rem;
+  color: var(--t7);
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .consult-section-text { color: #cbd5e1; }
+
+.consult-notes-text {
+  color: var(--t5);
+  font-style: italic;
+}
+
+[data-theme='dark'] .consult-notes-text { color: #94a3b8; }
+
+/* Symptom list */
+.consult-symptom-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.consult-symptom-list li {
+  font-size: 0.93rem;
+  color: var(--t7);
+  padding-left: 14px;
+  position: relative;
+}
+
+.consult-symptom-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--blue);
+  font-weight: 700;
+}
+
+[data-theme='dark'] .consult-symptom-list li { color: #cbd5e1; }
+
+/* ---- Prescription card ---- */
+.consult-prescription-card {
+  margin-top: 14px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.04) 0%, rgba(99, 102, 241, 0.04) 100%);
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+[data-theme='dark'] .consult-prescription-card {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
+  border-color: rgba(37, 99, 235, 0.22);
+}
+
+.consult-prescription-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(37, 99, 235, 0.07);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+[data-theme='dark'] .consult-prescription-header {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+.consult-presc-icon {
+  font-size: 0.95rem;
+}
+
+.consult-presc-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.consult-presc-divider {
+  display: none; /* handled by border on header */
+}
+
+.consult-presc-items {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.consult-presc-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.consult-presc-drug {
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: var(--t9);
+}
+
+[data-theme='dark'] .consult-presc-drug { color: #e2e8f0; }
+
+.consult-presc-detail {
+  font-size: 0.82rem;
+  color: var(--t5);
+  padding-left: 2px;
+}
+
+/* Legacy compat */
 .consult-grid {
   display: flex;
   flex-direction: column;
   gap: 12px;
   background: var(--white);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(203, 220, 245, 0.5);
   border-radius: var(--r-md);
   padding: 16px;
   margin-top: 10px;
@@ -4310,7 +4565,7 @@ button.s-nav-item {
   display: flex;
   gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px dashed var(--b3);
+  border-bottom: 1px dashed rgba(203, 220, 245, 0.6);
 }
 .consult-row:last-child {
   padding-bottom: 0;
@@ -4337,28 +4592,6 @@ button.s-nav-item {
   flex: 1;
 }
 
-/* Medicine prescription section styling */
-.consult-prescription {
-  margin-top: 16px;
-  padding: 16px;
-  background: rgba(37, 99, 235, 0.05);
-  border: 1px solid rgba(37, 99, 235, 0.15);
-  border-radius: var(--r-md);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-[data-theme='dark'] .consult-prescription {
-  background: rgba(37, 99, 235, 0.1);
-  border-color: rgba(37, 99, 235, 0.2);
-}
-
-.consult-prescription .consult-lbl {
-  color: var(--blue);
-}
-
-/* Severity Badges */
 .severity-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -4367,19 +4600,6 @@ button.s-nav-item {
   font-weight: 700;
   flex: none;
   width: fit-content;
-}
-
-.severity-mild {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-}
-.severity-moderate {
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
-}
-.severity-severe {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
 }
 
 .consult-legacy {
@@ -5011,4 +5231,76 @@ button.s-nav-item {
     width: 36px;
     height: 36px;
   }
+}
+/* Patient Status Table Component */
+.patient-status-card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 4px 6px -1px, rgba(0, 0, 0, 0.03) 0 2px 4px -1px;
+  border: 1px solid #E5E7EB;
+  overflow: hidden;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+[data-theme='dark'] .patient-status-card {
+  border-color: #374151;
+}
+
+.patient-status-header {
+  background: #F9FAFB;
+  padding: 16px 20px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--t9);
+  border-bottom: 1px solid #E5E7EB;
+  font-family: var(--heading);
+}
+
+[data-theme='dark'] .patient-status-header {
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid #374151;
+}
+
+.patient-status-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.patient-status-table th {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--t6);
+  padding: 12px 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+[data-theme='dark'] .patient-status-table th {
+  border-bottom-color: #374151;
+}
+
+.patient-status-table td {
+  padding: 16px 20px;
+  font-size: 15px;
+  color: var(--t9);
+  border-bottom: 1px solid #E5E7EB;
+  vertical-align: top;
+  height: 48px;
+}
+
+[data-theme='dark'] .patient-status-table td {
+  border-bottom-color: #374151;
+}
+
+.patient-status-table tr:last-child td {
+  border-bottom: none;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 14px;
 }
